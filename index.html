@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vincent Fraillon — Welcome Hub</title>
+  <meta name="description" content="Vincent Fraillon's personal hub — builder, poker player, creator." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- Ambient background orbs -->
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="container">
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+
+    <!-- ==================== HERO ==================== -->
+    <header class="hero">
+      <div class="avatar-ring">
+        <img src="/avatar.jpg" alt="Vincent Fraillon" class="avatar-img" />
+      </div>
+      <h1 class="hero-name">Vincent Fraillon</h1>
+      <p class="hero-tagline">Builder &middot; Data &middot; Poker &middot; Creator</p>
+      <span class="status-dot" title="Online"></span>
+    </header>
+
+    <!-- ==================== BENTO GRID ==================== -->
+    <section class="bento-grid">
+
+      <!-- GitHub Activity -->
+      <div class="bento-card bento-wide" id="githubCard">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span>Building</span>
+          <span class="live-badge">LIVE</span>
+        </div>
+        <div class="github-content" id="githubContent">
+          <div class="commit-skeleton">
+            <div class="skeleton-line w80"></div>
+            <div class="skeleton-line w60"></div>
+            <div class="skeleton-line w70"></div>
+          </div>
+        </div>
+        <a href="https://github.com/chiptuned" target="_blank" class="card-footer-link">View all repos &rarr;</a>
+      </div>
+
+      <!-- Now Listening -->
+      <div class="bento-card" id="spotifyCard">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span>Listening</span>
+        </div>
+        <div class="listening-content">
+          <div class="album-art-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <div class="track-info">
+            <span class="track-status">Nothing playing</span>
+            <span class="track-name">Connect Spotify to see live activity</span>
+          </div>
+        </div>
+        <div class="equalizer" id="equalizer">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <!-- Poker Status -->
+      <div class="bento-card bento-wide" id="pokerCard">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8 2 4 6 4 10c0 5 8 12 8 12s8-7 8-12c0-4-4-8-8-8z" fill="none"/><text x="12" y="13" text-anchor="middle" font-size="8" fill="currentColor" stroke="none" font-weight="bold">&spades;</text></svg>
+          <span>Poker</span>
+          <span class="status-pill" id="pokerStatusPill">
+            <span class="status-pill-dot offline"></span>
+            <span id="pokerStatus">Offline</span>
+          </span>
+        </div>
+        <div class="poker-layout">
+          <div class="poker-left">
+            <div class="poker-cards">
+              <span class="mini-card">&spades;</span>
+              <span class="mini-card red">&hearts;</span>
+              <span class="mini-card">&clubs;</span>
+              <span class="mini-card red">&diams;</span>
+            </div>
+            <span class="poker-platforms">Winamax &middot; PokerStars</span>
+          </div>
+          <div class="poker-venues">
+            <div class="venues-header">
+              <span class="venues-title">Next live sessions</span>
+              <a href="#" id="addToCalendarBtn" class="add-cal-btn" title="Add to Google Calendar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>Sync Calendar</span>
+              </a>
+            </div>
+            <div class="venue-list" id="venueList">
+              <div class="venue-item">
+                <span class="venue-date">Loading...</span>
+                <span class="venue-name">Fetching from calendar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="bento-card bento-small">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>Contact</span>
+        </div>
+        <div class="contact-content">
+          <a href="mailto:vincent@fraillon.com" class="contact-row">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>vincent@fraillon.com</span>
+          </a>
+          <a href="https://discord.com/users/chiptuned02" class="contact-row" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286z"/></svg>
+            <span>chiptuned02</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Resume / Pro links -->
+      <div class="bento-card bento-small">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Links</span>
+        </div>
+        <div class="links-list">
+          <a href="https://resume.fraillon.com" target="_blank">resume.fraillon.com</a>
+          <a href="https://www.linkedin.com/in/vincent-fraillon/" target="_blank">LinkedIn</a>
+          <a href="https://github.com/chiptuned" target="_blank">GitHub</a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== COMING SOON ==================== -->
+    <section class="coming-soon">
+      <div class="coming-soon-inner">
+        <div class="cs-badge">COMING SOON</div>
+        <h2 class="cs-title">YouTube &amp; Masterclass</h2>
+        <p class="cs-desc">
+          Poker through the lens of data and mental game. From online
+          to live grind &mdash; strategy, variance, tilt control, and the
+          mindset that separates winners without going pro.
+        </p>
+        <div class="cs-cards">
+          <div class="cs-card">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" opacity="0.7"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <h3>YouTube Channel</h3>
+            <p>Hand reviews, data breakdowns, grind vlogs</p>
+          </div>
+          <div class="cs-card">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <h3>Masterclass</h3>
+            <p>Poker from a data &amp; mental perspective &mdash; online to live</p>
+          </div>
+        </div>
+        <form class="cs-notify" id="notifyForm">
+          <input type="email" placeholder="your@email.com" class="cs-input" required />
+          <button type="submit" class="cs-btn">Notify me</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <p>&copy; 2026 Vincent Fraillon &middot; Paris</p>
+    </footer>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

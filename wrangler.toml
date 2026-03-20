@@ -1,0 +1,13 @@
+# Cloudflare Pages configuration
+name = "welcome-hub"
+compatibility_date = "2024-12-01"
+
+# Pages will auto-detect:
+# - Static assets from dist/ (after vite build)
+# - Functions from functions/ directory
+# - Env vars from Cloudflare dashboard
+
+# No additional config needed — Cloudflare Pages handles routing:
+# /api/now-playing → functions/api/now-playing.js
+# /api/poker-events → functions/api/poker-events.js
+# Everything else → dist/ static files
