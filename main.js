@@ -133,7 +133,15 @@ async function fetchGitHubActivity() {
 
 // ---------- Spotify Now Playing ----------
 const spotifyCard = document.getElementById('spotifyCard');
-const equalizer = document.getElementById('equalizer');
+const queueList = document.getElementById('queueList');
+
+// Toggle queue on card click
+spotifyCard.addEventListener('click', (e) => {
+  // Don't toggle if clicking a link
+  if (e.target.closest('a')) return;
+  if (!spotifyCard.classList.contains('has-queue')) return;
+  queueList.classList.toggle('visible');
+});
 
 async function fetchNowPlaying() {
   if (!CONFIG.spotify.apiUrl) {
@@ -147,6 +155,7 @@ async function fetchNowPlaying() {
     const data = await res.json();
 
     const listeningContent = spotifyCard.querySelector('.listening-content');
+    const equalizer = spotifyCard.querySelector('.equalizer');
 
     if (data.isPlaying && data.title) {
       const trackLink = data.trackUrl || '#';
@@ -158,10 +167,28 @@ async function fetchNowPlaying() {
           <span class="track-status" style="color:var(--green);">Now playing</span>
           <a href="${trackLink}" target="_blank" class="track-name" style="cursor:pointer;"><strong>${esc(data.title)}</strong></a>
           <span class="track-artist" style="font-size:0.78rem;color:var(--text-tertiary);">${esc(data.artist)}</span>
+        </div>
+        <div class="equalizer playing" style="opacity:1;">
+          <span></span><span></span><span></span><span></span><span></span>
         </div>`;
-      equalizer.classList.add('playing');
-      equalizer.style.opacity = '1';
-      console.log(`[hub] Spotify: playing "${data.title}" by ${data.artist}`);
+
+      // Render queue
+      if (data.queue && data.queue.length > 0) {
+        spotifyCard.classList.add('has-queue');
+        queueList.innerHTML = `
+          <span class="queue-label">Up next</span>
+          ${data.queue.map(t => `
+            <div class="queue-item">
+              <div class="queue-item-art" style="${t.albumArt ? `background-image:url(${t.albumArt})` : ''}"></div>
+              <span>${esc(t.title)} <span class="queue-item-artist">${esc(t.artist)}</span></span>
+            </div>`).join('')}`;
+      } else {
+        spotifyCard.classList.remove('has-queue');
+        queueList.innerHTML = '';
+        queueList.classList.remove('visible');
+      }
+
+      console.log(`[hub] Spotify: playing "${data.title}" by ${data.artist}, queue: ${data.queue?.length || 0}`);
     } else {
       listeningContent.innerHTML = `
         <div class="album-art-placeholder">
@@ -170,9 +197,13 @@ async function fetchNowPlaying() {
         <div class="track-info">
           <span class="track-status">Nothing playing</span>
           <span class="track-name">Silence is golden</span>
+        </div>
+        <div class="equalizer" style="opacity:0.3;">
+          <span></span><span></span><span></span><span></span><span></span>
         </div>`;
-      equalizer.classList.remove('playing');
-      equalizer.style.opacity = '0.3';
+      spotifyCard.classList.remove('has-queue');
+      queueList.innerHTML = '';
+      queueList.classList.remove('visible');
       console.log('[hub] Spotify: nothing playing');
     }
   } catch (err) {

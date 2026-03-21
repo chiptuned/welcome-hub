@@ -17,6 +17,7 @@
 
 const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token';
 const SPOTIFY_NOW_PLAYING_URL = 'https://api.spotify.com/v1/me/player/currently-playing';
+const SPOTIFY_QUEUE_URL = 'https://api.spotify.com/v1/me/player/queue';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -94,6 +95,22 @@ export async function onRequestGet(context) {
 
     const { item, is_playing, progress_ms } = nowPlaying;
 
+    // Fetch queue (best-effort, don't fail if it errors)
+    let queue = [];
+    try {
+      const qRes = await fetch(SPOTIFY_QUEUE_URL, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (qRes.ok) {
+        const qData = await qRes.json();
+        queue = (qData.queue || []).slice(0, 5).map(t => ({
+          title: t.name,
+          artist: t.artists?.map(a => a.name).join(', ') || 'Unknown',
+          albumArt: t.album?.images?.[t.album.images.length - 1]?.url || null,
+        }));
+      }
+    } catch (_) { /* queue is optional */ }
+
     return jsonResponse({
       isPlaying: is_playing,
       title: item.name,
@@ -103,6 +120,7 @@ export async function onRequestGet(context) {
       trackUrl: item.external_urls?.spotify || null,
       progressMs: progress_ms,
       durationMs: item.duration_ms,
+      queue,
     });
   } catch (err) {
     console.error('[spotify] Error:', err.message);
