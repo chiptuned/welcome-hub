@@ -169,21 +169,72 @@ async function fetchPokerVenues() {
     if (!res.ok) throw new Error(`Poker API ${res.status}`);
     const data = await res.json();
 
-    if (data.events?.length > 0) {
-      venueList.innerHTML = data.events.map(event => {
-        const date = new Date(event.start);
-        const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-        const timeStr = !event.allDay
-          ? date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
-          : '';
-        const location = event.location ? ` — ${esc(event.location)}` : '';
+    // Filter out online-only events (Winamax/PokerStars series without a physical location)
+    const ONLINE_KEYWORDS = ['winamax', 'pokerstars'];
+    const isOnlineEvent = (event) => {
+      const name = event.summary.toLowerCase();
+      return ONLINE_KEYWORDS.some(kw => name.includes(kw)) && !event.location;
+    };
+
+    const liveEvents = (data.events || []).filter(e => !isOnlineEvent(e));
+
+    // Group consecutive days of the same event title into a single entry with date range
+    function groupConsecutiveEvents(events) {
+      if (!events.length) return [];
+      const groups = [];
+      let current = null;
+
+      for (const event of events) {
+        const startDate = new Date(event.start);
+        const dayKey = `${startDate.getFullYear()}-${startDate.getMonth()}-${startDate.getDate()}`;
+
+        if (current && current.summary === event.summary) {
+          // Check if this is the next day (or same day different time — skip dupes)
+          const prevEnd = new Date(current.lastDate);
+          const diffDays = Math.round((startDate - prevEnd) / 86400000);
+          if (diffDays <= 1) {
+            current.lastDate = startDate;
+            current.dayCount++;
+            continue;
+          }
+        }
+
+        // Start a new group
+        if (current) groups.push(current);
+        current = {
+          summary: event.summary,
+          firstDate: startDate,
+          lastDate: startDate,
+          time: !event.allDay
+            ? startDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+            : '',
+          location: event.location,
+          allDay: event.allDay,
+          dayCount: 1,
+        };
+      }
+      if (current) groups.push(current);
+      return groups;
+    }
+
+    const grouped = groupConsecutiveEvents(liveEvents);
+
+    if (grouped.length > 0) {
+      venueList.innerHTML = grouped.map(g => {
+        const fmtDate = (d) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        let dateStr = fmtDate(g.firstDate);
+        if (g.dayCount > 1) {
+          dateStr += ` – ${fmtDate(g.lastDate)}`;
+        }
+        const timeStr = g.time || '';
+        const location = g.location ? ` — ${esc(g.location)}` : '';
         return `
           <div class="venue-item">
             <span class="venue-date">${dateStr}${timeStr ? ' ' + timeStr : ''}</span>
-            <span class="venue-name">${esc(event.summary)}${location}</span>
+            <span class="venue-name">${esc(g.summary)}${location}</span>
           </div>`;
       }).join('');
-      console.log(`[hub] Poker: loaded ${data.events.length} upcoming events`);
+      console.log(`[hub] Poker: ${data.events.length} raw → ${liveEvents.length} live → ${grouped.length} grouped`);
     } else {
       venueList.innerHTML = `
         <div class="venue-item">
