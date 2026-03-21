@@ -280,7 +280,7 @@ async function fetchPokerVenues() {
           dateStr += ` – ${fmtDate(g.lastDate)}`;
         }
         const timeStr = g.time || '';
-        const location = g.location ? ` — ${esc(g.location)}` : '';
+        const location = g.location ? ` · ${esc(g.location)}` : '';
         const tag = g.url ? 'a' : 'div';
         const linkAttrs = g.url ? ` href="${esc(g.url)}" target="_blank" rel="noopener"` : '';
         return `
@@ -343,7 +343,7 @@ notifyForm.addEventListener('submit', async (e) => {
     input.value = '';
   } catch (err) {
     console.error('[hub] Notify error:', err);
-    btn.textContent = 'Error — retry';
+    btn.textContent = 'Error, retry';
     btn.style.background = 'var(--red)';
   }
 
