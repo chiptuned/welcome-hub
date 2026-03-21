@@ -111,7 +111,7 @@ async function fetchIcalWithCache(icalUrl) {
   try {
     const icalRes = await fetch(icalUrl, {
       headers: { 'User-Agent': 'welcome-hub/1.0' },
-      cf: { cacheTtl: 0 }, // bypass Cloudflare edge cache for the upstream
+      cf: { cacheTtl: 3600, cacheEverything: true }, // let CF edge cache upstream for 1h
     });
 
     if (icalRes.ok) {
