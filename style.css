@@ -197,12 +197,30 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 10px;
 }
 
-.status-dot {
-  display: inline-block;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--green);
-  animation: pulse-dot 2s ease-in-out infinite;
+/* Avatar lightbox */
+.avatar-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: lightbox-in 0.25s ease-out;
+}
+.avatar-lightbox img {
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 16px;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+  object-fit: cover;
+}
+@keyframes lightbox-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ---------- BENTO GRID ---------- */
@@ -244,7 +262,6 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.08em;
   color: var(--text-secondary);
 }
-.card-header svg { opacity: 0.6; }
 
 .live-badge {
   margin-left: auto;
@@ -338,6 +355,7 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   gap: 14px;
+  min-height: 56px;
 }
 
 .album-art-placeholder {
@@ -402,27 +420,53 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   gap: 10px;
 }
+
+/* Flippable poker cards */
 .poker-cards {
   display: flex;
-  gap: 4px;
+  gap: 5px;
 }
-.mini-card {
+.flip-card {
+  width: 30px; height: 40px;
+  perspective: 400px;
+  cursor: pointer;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.flip-card:hover .flip-card-inner,
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px; height: 38px;
-  background: var(--surface);
   border-radius: 6px;
-  font-size: 14px;
-  color: var(--text-secondary);
   border: 1px solid var(--surface-border);
-  transition: transform var(--transition);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  font-size: 14px;
 }
-.mini-card.red { color: var(--red); }
-.bento-card:hover .mini-card:nth-child(1) { transform: rotate(-8deg); }
-.bento-card:hover .mini-card:nth-child(2) { transform: rotate(-3deg); }
-.bento-card:hover .mini-card:nth-child(3) { transform: rotate(3deg); }
-.bento-card:hover .mini-card:nth-child(4) { transform: rotate(8deg); }
+.flip-card-front {
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+.flip-card-front.red { color: var(--red); }
+.flip-card-back {
+  background: var(--accent-glow);
+  color: var(--accent);
+  transform: rotateY(180deg);
+  font-size: 0.55rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.02em;
+}
 
 /* Online pill — lights up live on Sundays 5pm–1am */
 .online-pill {
@@ -457,28 +501,23 @@ a { color: inherit; text-decoration: none; }
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
-/* Sync calendar button */
-.add-cal-btn {
-  display: inline-flex;
+/* Sync calendar — subtle corner link */
+.add-cal-link {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-size: 0.7rem;
+  gap: 4px;
+  font-size: 0.6rem;
   font-weight: 500;
-  color: var(--accent);
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: var(--accent-glow);
-  border: 1px solid transparent;
-  transition: all var(--transition);
+  color: var(--text-tertiary);
+  margin-top: 6px;
+  transition: color var(--transition);
   cursor: pointer;
-  align-self: center;
-  margin-top: 4px;
 }
-.add-cal-btn:hover {
-  border-color: var(--accent);
-  background: rgba(124, 92, 252, 0.2);
+.add-cal-link:hover {
+  color: var(--accent);
 }
+.add-cal-link svg { opacity: 0.5; }
+.add-cal-link:hover svg { opacity: 1; }
 
 /* Venue list */
 .venue-list {
@@ -696,5 +735,5 @@ a { color: inherit; text-decoration: none; }
   .bento-wide { grid-column: span 1; }
   .cs-cards { grid-template-columns: 1fr; }
   .cs-notify { flex-direction: column; }
-  .poker-compact .add-cal-btn { font-size: 0.65rem; }
+  .add-cal-link { font-size: 0.55rem; }
 }

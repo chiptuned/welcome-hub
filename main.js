@@ -35,8 +35,22 @@ themeToggle.addEventListener('click', () => {
   try { localStorage.setItem('hub-theme', next); } catch {}
 });
 
+// ---------- Avatar Lightbox ----------
+const avatarImg = document.querySelector('.avatar-img');
+if (avatarImg) {
+  avatarImg.style.cursor = 'pointer';
+  avatarImg.addEventListener('click', () => {
+    const overlay = document.createElement('div');
+    overlay.className = 'avatar-lightbox';
+    overlay.innerHTML = `<img src="/avatar.jpg" alt="Vincent Fraillon" />`;
+    overlay.addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
+  });
+}
+
 // ---------- GitHub Activity ----------
 const githubContent = document.getElementById('githubContent');
+const buildingLiveBadge = document.getElementById('buildingLiveBadge');
 
 async function fetchGitHubActivity() {
   const GH_USER = CONFIG.github.user;
@@ -53,6 +67,13 @@ async function fetchGitHubActivity() {
     const pushEvents = events
       .filter(e => e.type === 'PushEvent' && e.payload?.commits?.length)
       .slice(0, 5);
+
+    // Show LIVE badge only if there are commits from today
+    const today = new Date().toDateString();
+    const hasTodayCommit = pushEvents.some(e => new Date(e.created_at).toDateString() === today);
+    if (buildingLiveBadge) {
+      buildingLiveBadge.style.display = hasTodayCommit ? '' : 'none';
+    }
 
     let html = '';
 
@@ -90,13 +111,12 @@ async function fetchGitHubActivity() {
     }
 
     githubContent.innerHTML = html;
-    console.log(`[hub] GitHub: loaded ${pushEvents.length} commits, ${repos.length} repos`);
+    console.log(`[hub] GitHub: loaded ${pushEvents.length} commits, ${repos.length} repos, today=${hasTodayCommit}`);
   } catch (err) {
     console.error('[hub] GitHub fetch error:', err);
     githubContent.innerHTML = `
       <p style="color:var(--text-tertiary);font-size:0.85rem;">
         Could not load GitHub activity.
-        <a href="https://github.com/${CONFIG.github.user}" target="_blank" style="color:var(--accent);">View profile &rarr;</a>
       </p>`;
   }
 }
@@ -148,6 +168,13 @@ async function fetchNowPlaying() {
     console.error('[hub] Spotify error:', err);
   }
 }
+
+// ---------- Poker Flip Cards ----------
+document.querySelectorAll('.flip-card').forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('flipped');
+  });
+});
 
 // ---------- Online Poker Live Pill (Sundays 17:00–01:00 Paris) ----------
 const onlinePill = document.getElementById('onlinePill');
@@ -207,7 +234,6 @@ async function fetchPokerVenues() {
 
       for (const event of events) {
         const startDate = new Date(event.start);
-        const dayKey = `${startDate.getFullYear()}-${startDate.getMonth()}-${startDate.getDate()}`;
 
         if (current && current.summary === event.summary) {
           // Check if this is the next day (or same day different time — skip dupes)
