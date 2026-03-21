@@ -134,6 +134,7 @@ async function fetchGitHubActivity() {
 // ---------- Spotify Now Playing ----------
 const spotifyCard = document.getElementById('spotifyCard');
 const queueList = document.getElementById('queueList');
+const listenAlongBtn = document.getElementById('listenAlongBtn');
 
 // Toggle queue on card click
 spotifyCard.addEventListener('click', (e) => {
@@ -188,6 +189,10 @@ async function fetchNowPlaying() {
         queueList.classList.remove('visible');
       }
 
+      // Show "Listen on Spotify" CTA
+      listenAlongBtn.href = trackLink;
+      listenAlongBtn.style.display = '';
+
       console.log(`[hub] Spotify: playing "${data.title}" by ${data.artist}, queue: ${data.queue?.length || 0}`);
     } else {
       listeningContent.innerHTML = `
@@ -204,6 +209,7 @@ async function fetchNowPlaying() {
       spotifyCard.classList.remove('has-queue');
       queueList.innerHTML = '';
       queueList.classList.remove('visible');
+      listenAlongBtn.style.display = 'none';
       console.log('[hub] Spotify: nothing playing');
     }
   } catch (err) {
