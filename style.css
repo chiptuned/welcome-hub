@@ -490,12 +490,12 @@ a.track-name:hover { color: var(--accent); }
   line-height: 1.2;
 }
 .flip-label strong {
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--accent);
 }
 .flip-label small {
-  font-size: 0.45rem;
+  font-size: 0.55rem;
   font-weight: 500;
   color: var(--text-tertiary);
   text-transform: uppercase;
@@ -503,9 +503,9 @@ a.track-name:hover { color: var(--accent); }
 }
 .flip-card.flipped .flip-label,
 .flip-card:hover .flip-label {
-  max-width: 100px;
+  max-width: 120px;
   opacity: 1;
-  padding-left: 5px;
+  padding-left: 6px;
 }
 
 /* Online pill — lights up live on Sundays 5pm–1am */
