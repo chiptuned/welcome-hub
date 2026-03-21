@@ -490,12 +490,12 @@ a.track-name:hover { color: var(--accent); }
   line-height: 1.2;
 }
 .flip-label strong {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--accent);
 }
 .flip-label small {
-  font-size: 0.55rem;
+  font-size: 0.65rem;
   font-weight: 500;
   color: var(--text-tertiary);
   text-transform: uppercase;
@@ -503,7 +503,7 @@ a.track-name:hover { color: var(--accent); }
 }
 .flip-card.flipped .flip-label,
 .flip-card:hover .flip-label {
-  max-width: 120px;
+  max-width: 140px;
   opacity: 1;
   padding-left: 6px;
 }
