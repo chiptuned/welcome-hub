@@ -17,6 +17,10 @@ const CONFIG = {
     // Cloudflare Pages Function — proxies + parses your public iCal feed
     apiUrl: 'https://welcome-hub-2c3.pages.dev/api/poker-events',
   },
+  notify: {
+    // Google Apps Script web app endpoint
+    apiUrl: 'https://script.google.com/macros/s/AKfycbwG152uKW-CgMHsWOngqDIKj0tXoFuRI-_Wx48_jdDlncHtgdbE-O2NUqMa6C85_ITE/exec',
+  },
 };
 
 // ---------- Theme Toggle ----------
@@ -259,6 +263,7 @@ async function fetchPokerVenues() {
           location: event.location,
           allDay: event.allDay,
           dayCount: 1,
+          url: event.url || null,
         };
       }
       if (current) groups.push(current);
@@ -276,11 +281,14 @@ async function fetchPokerVenues() {
         }
         const timeStr = g.time || '';
         const location = g.location ? ` — ${esc(g.location)}` : '';
+        const tag = g.url ? 'a' : 'div';
+        const linkAttrs = g.url ? ` href="${esc(g.url)}" target="_blank" rel="noopener"` : '';
         return `
-          <div class="venue-item">
+          <${tag} class="venue-item${g.url ? ' venue-link' : ''}"${linkAttrs}>
             <span class="venue-date">${dateStr}${timeStr ? ' ' + timeStr : ''}</span>
             <span class="venue-name">${esc(g.summary)}${location}</span>
-          </div>`;
+            ${g.url ? '<svg class="venue-arrow" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>' : ''}
+          </${tag}>`;
       }).join('');
       console.log(`[hub] Poker: ${data.events.length} raw → ${liveEvents.length} live → ${grouped.length} grouped`);
     } else {
@@ -312,20 +320,32 @@ addToCalendarBtn?.addEventListener('click', (e) => {
 
 // ---------- Notify Form ----------
 const notifyForm = document.getElementById('notifyForm');
-notifyForm.addEventListener('submit', (e) => {
+notifyForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const input = notifyForm.querySelector('.cs-input');
   const btn = notifyForm.querySelector('.cs-btn');
   const email = input.value;
 
-  // In production: POST to your email service (Resend, ConvertKit, etc.)
-  console.log('[hub] Notify signup:', email);
-
-  btn.textContent = 'Subscribed!';
-  btn.style.background = 'var(--green)';
-  input.value = '';
-  input.disabled = true;
+  btn.textContent = 'Sending...';
   btn.disabled = true;
+  input.disabled = true;
+
+  try {
+    const res = await fetch(CONFIG.notify.apiUrl, {
+      method: 'POST',
+      body: JSON.stringify({ email, source: 'welcome-hub' }),
+    });
+    const data = await res.json();
+    console.log('[hub] Notify signup:', email, data);
+
+    btn.textContent = 'Subscribed!';
+    btn.style.background = 'var(--green)';
+    input.value = '';
+  } catch (err) {
+    console.error('[hub] Notify error:', err);
+    btn.textContent = 'Error — retry';
+    btn.style.background = 'var(--red)';
+  }
 
   setTimeout(() => {
     btn.textContent = 'Notify me';

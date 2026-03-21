@@ -49,6 +49,8 @@ function parseIcal(icalText) {
     const dtStartMatch = unfolded.match(/^DTSTART[;:](.*)$/m);
     const dtEndMatch = unfolded.match(/^DTEND[;:](.*)$/m);
     const locationMatch = unfolded.match(/^LOCATION[;:](.*)$/m);
+    const descriptionMatch = unfolded.match(/^DESCRIPTION[;:](.*)$/m);
+    const urlMatch = unfolded.match(/^URL[;:](.*)$/m);
 
     const extractValue = (match) => {
       if (!match) return null;
@@ -64,6 +66,8 @@ function parseIcal(icalText) {
     const dtStart = extractValue(dtStartMatch);
     const dtEnd = extractValue(dtEndMatch);
     const location = extractValue(locationMatch);
+    const description = extractValue(descriptionMatch);
+    const eventUrl = extractValue(urlMatch);
 
     if (!summary || !dtStart) continue;
 
@@ -77,12 +81,20 @@ function parseIcal(icalText) {
       return str.endsWith('Z') ? new Date(d + 'Z') : new Date(d);
     };
 
+    // Extract best URL: explicit URL field > first URL in description > null
+    const cleanDesc = description ? description.replace(/\\,/g, ',').replace(/\\n/g, '\n').trim() : '';
+    const descUrlMatch = cleanDesc.match(/https?:\/\/[^\s"<>\\]+/);
+    const link = eventUrl
+      ? eventUrl.replace(/\\,/g, ',').trim()
+      : descUrlMatch ? descUrlMatch[0] : null;
+
     events.push({
       summary: summary.replace(/\\,/g, ',').replace(/\\n/g, ' ').trim(),
       start: parseDate(dtStart),
       end: parseDate(dtEnd),
       location: location ? location.replace(/\\,/g, ',').replace(/\\n/g, ' ').trim() : null,
       allDay: dtStart.length === 8 || (dtStartMatch && dtStartMatch[1].includes('VALUE=DATE')),
+      url: link,
     });
   }
 
@@ -171,6 +183,7 @@ export async function onRequestGet(context) {
         end: e.end?.toISOString() || null,
         location: e.location,
         allDay: e.allDay,
+        url: e.url || null,
       }));
 
     return jsonResponse({
