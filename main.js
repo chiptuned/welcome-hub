@@ -30,7 +30,13 @@ const htmlEl = document.documentElement;
 const savedTheme = (() => {
   try { return localStorage.getItem('hub-theme'); } catch { return null; }
 })();
-if (savedTheme) htmlEl.setAttribute('data-theme', savedTheme);
+if (savedTheme) {
+  htmlEl.setAttribute('data-theme', savedTheme);
+} else {
+  // Default to dark unless user explicitly prefers light
+  const prefersDark = !window.matchMedia || !window.matchMedia('(prefers-color-scheme: light)').matches;
+  htmlEl.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+}
 
 themeToggle.addEventListener('click', () => {
   const current = htmlEl.getAttribute('data-theme');
