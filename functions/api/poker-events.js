@@ -90,46 +90,61 @@ function parseIcal(icalText) {
 }
 
 /**
- * Fetch iCal with Cloudflare Cache API — avoids hammering Google Calendar
+ * Fetch iCal with Cloudflare Cache API — avoids hammering Google Calendar.
+ * Serves stale cache if Google returns 429 (rate limited).
+ * Uses two cache keys: fresh (10min TTL) and stale (24h fallback).
  */
 async function fetchIcalWithCache(icalUrl) {
   const cache = caches.default;
-  // Use a synthetic cache key (Cache API needs a Request object)
-  const cacheKey = new Request(`https://cache-internal/poker-ical`, {
-    method: 'GET',
-  });
+  const freshKey = new Request('https://cache-internal/poker-ical-fresh');
+  const staleKey = new Request('https://cache-internal/poker-ical-stale');
 
-  // Try cache first
-  const cached = await cache.match(cacheKey);
-  if (cached) {
-    console.log('[poker-events] Cache HIT');
-    return await cached.text();
+  // 1. Try fresh cache first
+  const freshCached = await cache.match(freshKey);
+  if (freshCached) {
+    console.log('[poker-events] Fresh cache HIT');
+    return await freshCached.text();
   }
 
+  // 2. Cache miss — try fetching from Google
   console.log('[poker-events] Cache MISS — fetching from Google Calendar');
-  const icalRes = await fetch(icalUrl, {
-    headers: {
-      'User-Agent': 'welcome-hub/1.0 (Cloudflare Pages Function)',
-    },
-  });
+  try {
+    const icalRes = await fetch(icalUrl, {
+      headers: { 'User-Agent': 'welcome-hub/1.0' },
+      cf: { cacheTtl: 0 }, // bypass Cloudflare edge cache for the upstream
+    });
 
-  if (!icalRes.ok) {
-    throw new Error(`iCal fetch failed: ${icalRes.status}`);
+    if (icalRes.ok) {
+      const icalText = await icalRes.text();
+
+      // Store fresh (10min) + stale (24h) caches
+      await Promise.all([
+        cache.put(freshKey, new Response(icalText, {
+          headers: { 'Cache-Control': `s-maxage=${CACHE_TTL}`, 'Content-Type': 'text/calendar' },
+        })),
+        cache.put(staleKey, new Response(icalText, {
+          headers: { 'Cache-Control': 's-maxage=86400', 'Content-Type': 'text/calendar' },
+        })),
+      ]);
+
+      console.log('[poker-events] Fetched OK, cached fresh + stale');
+      return icalText;
+    }
+
+    // Non-OK response — fall through to stale cache
+    console.log(`[poker-events] Google returned ${icalRes.status}, trying stale cache`);
+  } catch (fetchErr) {
+    console.log(`[poker-events] Fetch error: ${fetchErr.message}, trying stale cache`);
   }
 
-  const icalText = await icalRes.text();
+  // 3. Fall back to stale cache
+  const staleCached = await cache.match(staleKey);
+  if (staleCached) {
+    console.log('[poker-events] Stale cache HIT (fallback)');
+    return await staleCached.text();
+  }
 
-  // Store in cache for CACHE_TTL seconds
-  const cacheResponse = new Response(icalText, {
-    headers: {
-      'Cache-Control': `s-maxage=${CACHE_TTL}`,
-      'Content-Type': 'text/calendar',
-    },
-  });
-  // waitUntil not available here, but cache.put is fast
-  await cache.put(cacheKey, cacheResponse);
-
-  return icalText;
+  throw new Error('Calendar unavailable (rate limited, no cache)');
 }
 
 export async function onRequestOptions() {

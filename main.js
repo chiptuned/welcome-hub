@@ -268,8 +268,8 @@ async function fetchPokerVenues() {
     console.error('[hub] Poker venues error:', err);
     venueList.innerHTML = `
       <div class="venue-item">
-        <span class="venue-date">!</span>
-        <span class="venue-name">Could not load calendar</span>
+        <span class="venue-date">&mdash;</span>
+        <span class="venue-name" style="font-size:0.7rem;color:var(--text-tertiary)">Calendar syncing...</span>
       </div>`;
   }
 }
