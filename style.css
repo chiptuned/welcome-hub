@@ -473,21 +473,33 @@ a.track-name:hover { color: var(--accent); }
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: -0.02em;
 }
-/* Platform name that slides out on flip */
+/* Username + room name that slides out on flip */
 .flip-label {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
   max-width: 0;
   overflow: hidden;
   white-space: nowrap;
-  font-size: 0.6rem;
-  font-weight: 600;
   font-family: 'JetBrains Mono', monospace;
-  color: var(--accent);
   opacity: 0;
   transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s,
               opacity 0.3s ease 0.2s,
               padding 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s;
   padding-left: 0;
+  line-height: 1.2;
+}
+.flip-label strong {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.flip-label small {
+  font-size: 0.45rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .flip-card.flipped .flip-label,
 .flip-card:hover .flip-label {
