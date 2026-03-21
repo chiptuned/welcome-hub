@@ -5,6 +5,8 @@
  * parses upcoming events, and returns JSON.
  * No API key needed — just the public iCal URL.
  *
+ * Uses Cloudflare Cache API to avoid hammering Google Calendar.
+ *
  * Env var (set in Cloudflare Pages dashboard):
  *   POKER_ICAL_URL — the public .ics URL from Google Calendar
  */
@@ -17,6 +19,8 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Content-Type': 'application/json',
 };
+
+const CACHE_TTL = 600; // 10 minutes
 
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -85,6 +89,49 @@ function parseIcal(icalText) {
   return events;
 }
 
+/**
+ * Fetch iCal with Cloudflare Cache API — avoids hammering Google Calendar
+ */
+async function fetchIcalWithCache(icalUrl) {
+  const cache = caches.default;
+  // Use a synthetic cache key (Cache API needs a Request object)
+  const cacheKey = new Request(`https://cache-internal/poker-ical`, {
+    method: 'GET',
+  });
+
+  // Try cache first
+  const cached = await cache.match(cacheKey);
+  if (cached) {
+    console.log('[poker-events] Cache HIT');
+    return await cached.text();
+  }
+
+  console.log('[poker-events] Cache MISS — fetching from Google Calendar');
+  const icalRes = await fetch(icalUrl, {
+    headers: {
+      'User-Agent': 'welcome-hub/1.0 (Cloudflare Pages Function)',
+    },
+  });
+
+  if (!icalRes.ok) {
+    throw new Error(`iCal fetch failed: ${icalRes.status}`);
+  }
+
+  const icalText = await icalRes.text();
+
+  // Store in cache for CACHE_TTL seconds
+  const cacheResponse = new Response(icalText, {
+    headers: {
+      'Cache-Control': `s-maxage=${CACHE_TTL}`,
+      'Content-Type': 'text/calendar',
+    },
+  });
+  // waitUntil not available here, but cache.put is fast
+  await cache.put(cacheKey, cacheResponse);
+
+  return icalText;
+}
+
 export async function onRequestOptions() {
   return new Response(null, { headers: CORS_HEADERS });
 }
@@ -93,10 +140,7 @@ export async function onRequestGet(context) {
   const icalUrl = context.env.POKER_ICAL_URL || DEFAULT_ICAL_URL;
 
   try {
-    const icalRes = await fetch(icalUrl);
-    if (!icalRes.ok) throw new Error(`iCal fetch failed: ${icalRes.status}`);
-
-    const icalText = await icalRes.text();
+    const icalText = await fetchIcalWithCache(icalUrl);
     const allEvents = parseIcal(icalText);
 
     const now = new Date();
