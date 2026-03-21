@@ -453,6 +453,18 @@ a.track-name:hover { color: var(--accent); }
   color: var(--text-tertiary);
   font-size: 0.65rem;
 }
+a.queue-item {
+  text-decoration: none;
+  color: inherit;
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  transition: background var(--transition);
+}
+a.queue-item:hover {
+  background: var(--surface-hover);
+}
+a.queue-item:hover span:first-child { color: var(--accent); }
 
 /* Make music card clickable when playing */
 #spotifyCard.has-queue { cursor: pointer; }

@@ -93,7 +93,10 @@ export async function onRequestGet(context) {
       return jsonResponse({ isPlaying: false });
     }
 
-    const { item, is_playing, progress_ms } = nowPlaying;
+    const { item, is_playing, progress_ms, context } = nowPlaying;
+
+    // Context URL = the playlist/album Vincent is playing from
+    const contextUrl = context?.external_urls?.spotify || null;
 
     // Fetch queue (best-effort, don't fail if it errors)
     let queue = [];
@@ -107,6 +110,7 @@ export async function onRequestGet(context) {
           title: t.name,
           artist: t.artists?.map(a => a.name).join(', ') || 'Unknown',
           albumArt: t.album?.images?.[t.album.images.length - 1]?.url || null,
+          trackUrl: t.external_urls?.spotify || null,
         }));
       }
     } catch (_) { /* queue is optional */ }
@@ -118,6 +122,7 @@ export async function onRequestGet(context) {
       album: item.album?.name || 'Unknown',
       albumArt: item.album?.images?.[0]?.url || null,
       trackUrl: item.external_urls?.spotify || null,
+      contextUrl,
       progressMs: progress_ms,
       durationMs: item.duration_ms,
       queue,

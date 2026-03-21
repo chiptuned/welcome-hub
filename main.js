@@ -173,24 +173,28 @@ async function fetchNowPlaying() {
           <span></span><span></span><span></span><span></span><span></span>
         </div>`;
 
-      // Render queue
+      // Render queue with clickable items
       if (data.queue && data.queue.length > 0) {
         spotifyCard.classList.add('has-queue');
         queueList.innerHTML = `
           <span class="queue-label">Up next</span>
-          ${data.queue.map(t => `
-            <div class="queue-item">
+          ${data.queue.map(t => {
+            const tag = t.trackUrl ? 'a' : 'div';
+            const attrs = t.trackUrl ? ` href="${esc(t.trackUrl)}" target="_blank" rel="noopener"` : '';
+            return `
+            <${tag} class="queue-item"${attrs}>
               <div class="queue-item-art" style="${t.albumArt ? `background-image:url(${t.albumArt})` : ''}"></div>
               <span>${esc(t.title)} <span class="queue-item-artist">${esc(t.artist)}</span></span>
-            </div>`).join('')}`;
+            </${tag}>`;
+          }).join('')}`;
       } else {
         spotifyCard.classList.remove('has-queue');
         queueList.innerHTML = '';
         queueList.classList.remove('visible');
       }
 
-      // Show "Listen on Spotify" CTA
-      listenAlongBtn.href = trackLink;
+      // Show "Listen on Spotify" CTA (link to playlist/album context if available, else track)
+      listenAlongBtn.href = data.contextUrl || trackLink;
       listenAlongBtn.style.display = '';
 
       console.log(`[hub] Spotify: playing "${data.title}" by ${data.artist}, queue: ${data.queue?.length || 0}`);
