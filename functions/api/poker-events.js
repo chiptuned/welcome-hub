@@ -10,7 +10,7 @@
  */
 
 const DEFAULT_ICAL_URL =
-  'https://calendar.google.com/calendar/ical/b7f8bc27bffb00fdc90e7c8e8383c094fcf5b325060f88950bc0d2571a482f8a%40group.calendar.google.com/public/basic.ics';
+  'https://calendar.google.com/calendar/ical/b7f8bc27bffb00fdc90e7c8e8383c094fcf5b325060f88950bc0d2571a482f8a@group.calendar.google.com/public/basic.ics';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
