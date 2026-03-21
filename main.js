@@ -10,15 +10,12 @@ const CONFIG = {
     user: 'chiptuned',
   },
   spotify: {
-    // Your Vercel/Cloudflare serverless endpoint URL
-    // Set up: see /api/now-playing.js and claude.md
-    apiUrl: null, // e.g. 'https://your-hub.vercel.app/api/now-playing'
+    // Cloudflare Pages Function endpoint
+    apiUrl: 'https://welcome-hub-2c3.pages.dev/api/now-playing',
   },
   poker: {
-    // Serverless endpoint that proxies + parses your public iCal feed
-    // Set up: deploy to Vercel, the endpoint is /api/poker-events
-    // The iCal URL is configured via POKER_ICAL_URL env var in Vercel
-    apiUrl: null, // e.g. 'https://your-hub.vercel.app/api/poker-events'
+    // Cloudflare Pages Function — proxies + parses your public iCal feed
+    apiUrl: 'https://welcome-hub-2c3.pages.dev/api/poker-events',
   },
 };
 
@@ -161,7 +158,7 @@ async function fetchPokerVenues() {
     venueList.innerHTML = `
       <div class="venue-item">
         <span class="venue-date">TBD</span>
-        <span class="venue-name">Deploy to Vercel to show upcoming sessions</span>
+        <span class="venue-name">No upcoming sessions found</span>
       </div>`;
     console.log('[hub] Poker: no API URL configured, showing placeholder');
     return;
