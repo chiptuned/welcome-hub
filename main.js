@@ -139,13 +139,14 @@ async function fetchNowPlaying() {
     const listeningContent = spotifyCard.querySelector('.listening-content');
 
     if (data.isPlaying && data.title) {
+      const trackLink = data.trackUrl || '#';
       listeningContent.innerHTML = `
-        <div class="album-art-placeholder" style="${data.albumArt ? `background-image:url(${data.albumArt});background-size:cover;` : ''}">
+        <a href="${trackLink}" target="_blank" class="album-art-placeholder" style="${data.albumArt ? `background-image:url(${data.albumArt});background-size:cover;` : ''}cursor:pointer;">
           ${!data.albumArt ? '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' : ''}
-        </div>
+        </a>
         <div class="track-info">
           <span class="track-status" style="color:var(--green);">Now playing</span>
-          <span class="track-name"><strong>${esc(data.title)}</strong></span>
+          <a href="${trackLink}" target="_blank" class="track-name" style="cursor:pointer;"><strong>${esc(data.title)}</strong></a>
           <span class="track-artist" style="font-size:0.78rem;color:var(--text-tertiary);">${esc(data.artist)}</span>
         </div>`;
       equalizer.classList.add('playing');
