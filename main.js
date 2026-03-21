@@ -149,6 +149,27 @@ async function fetchNowPlaying() {
   }
 }
 
+// ---------- Online Poker Live Pill (Sundays 17:00–01:00 Paris) ----------
+const onlinePill = document.getElementById('onlinePill');
+
+function updateOnlinePill() {
+  // Paris timezone — Sunday 17:00 to Monday 01:00
+  const now = new Date();
+  const paris = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Paris' }));
+  const day = paris.getDay(); // 0 = Sunday
+  const hour = paris.getHours();
+
+  const isLive = (day === 0 && hour >= 17) || (day === 1 && hour < 1);
+
+  if (onlinePill) {
+    onlinePill.classList.toggle('live', isLive);
+    console.log(`[hub] Online pill: ${isLive ? 'LIVE' : 'off'} (Paris: ${day}/${hour}h)`);
+  }
+}
+
+updateOnlinePill();
+setInterval(updateOnlinePill, 60 * 1000); // check every minute
+
 // ---------- Poker Venues (Google Calendar) ----------
 const venueList = document.getElementById('venueList');
 const addToCalendarBtn = document.getElementById('addToCalendarBtn');
