@@ -697,6 +697,63 @@ a.venue-link:hover .venue-arrow {
 .links-list a:last-child { border-bottom: none; }
 .links-list a:hover { color: var(--accent); }
 
+/* ---------- Q4O CARD ---------- */
+.q4o-card {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(124, 58, 237, 0.05));
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.q4o-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(124, 58, 237, 0.5);
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.2);
+}
+.q4o-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0;
+}
+.q4o-logo {
+  flex-shrink: 0;
+  color: var(--text-primary);
+  opacity: 0.9;
+}
+.q4o-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.q4o-tagline {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.q4o-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.q4o-arrow {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  transition: color var(--transition), transform var(--transition);
+}
+.q4o-card:hover .q4o-arrow {
+  color: #7c3aed;
+  transform: translate(2px, -2px);
+}
+[data-theme="light"] .q4o-card {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.03));
+}
+
 /* ---------- COMING SOON ---------- */
 .coming-soon {
   margin-bottom: 48px;
