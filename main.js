@@ -10,12 +10,12 @@ const CONFIG = {
     user: 'chiptuned',
   },
   spotify: {
-    // Cloudflare Pages Function endpoint
-    apiUrl: 'https://welcome-hub-2c3.pages.dev/api/now-playing',
+    // Cloudflare Pages Function endpoint (same-origin)
+    apiUrl: '/api/now-playing',
   },
   poker: {
-    // Cloudflare Pages Function — proxies + parses your public iCal feed
-    apiUrl: 'https://welcome-hub-2c3.pages.dev/api/poker-events',
+    // Cloudflare Pages Function — proxies + parses your public iCal feed (same-origin)
+    apiUrl: '/api/poker-events',
   },
   notify: {
     // Google Apps Script web app endpoint
