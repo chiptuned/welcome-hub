@@ -4,6 +4,7 @@ dist/
 .env
 .env.local
 .env.*.local
+.deploy.env
 scripts/.certs/
 .wrangler/
 *.log
