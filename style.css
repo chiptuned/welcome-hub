@@ -782,6 +782,28 @@ a.venue-link:hover .venue-arrow {
   border-radius: 50%;
   display: block;
 }
+.pb-card { position: relative; }
+.pb-cover-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.pb-actions {
+  position: relative;
+  z-index: 2;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pb-actions .q4o-arrow { margin-left: 0; }
+.pb-ig {
+  display: flex;
+  color: var(--text-tertiary);
+  transition: color var(--transition), transform var(--transition);
+}
+.pb-ig:hover { color: #c9718f; transform: translateY(-1px); }
 .pb-wordmark {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   letter-spacing: 0.03em;
