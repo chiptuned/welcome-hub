@@ -326,8 +326,8 @@ async function fetchPokerVenues() {
         if (g.dayCount > 1) {
           dateStr += ` – ${fmtDate(g.lastDate)}`;
         }
-        const timeStr = g.time || '';
-        const location = g.location ? ` · ${esc(g.location)}` : '';
+        const timeStr = g.dayCount > 1 ? '' : (g.time || '');
+        const location = (g.location && !/^https?:\/\//i.test(g.location)) ? ` · ${esc(g.location)}` : '';
         const tag = g.url ? 'a' : 'div';
         const linkAttrs = g.url ? ` href="${esc(g.url)}" target="_blank" rel="noopener"` : '';
         return `

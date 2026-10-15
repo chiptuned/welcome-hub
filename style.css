@@ -652,6 +652,7 @@ a.venue-link:hover .venue-arrow {
   font-family: 'JetBrains Mono', monospace;
   white-space: nowrap;
   min-width: 50px;
+  flex-shrink: 0;
 }
 .venue-name {
   font-size: 0.75rem;
@@ -659,6 +660,8 @@ a.venue-link:hover .venue-arrow {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 /* Contact card */
@@ -772,6 +775,12 @@ a.venue-link:hover .venue-arrow {
   flex-shrink: 0;
   display: flex;
   line-height: 0;
+}
+.pb-logo img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: block;
 }
 .pb-wordmark {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
