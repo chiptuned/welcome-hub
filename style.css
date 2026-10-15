@@ -754,6 +754,37 @@ a.venue-link:hover .venue-arrow {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.03));
 }
 
+/* ---------- POKERBAGUETTE CARD ---------- */
+.pb-card {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  background: linear-gradient(135deg, rgba(201, 113, 143, 0.15), rgba(201, 113, 143, 0.05));
+  border: 1px solid rgba(201, 113, 143, 0.28);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.pb-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 113, 143, 0.55);
+  box-shadow: 0 8px 32px rgba(201, 113, 143, 0.2);
+}
+.pb-logo {
+  flex-shrink: 0;
+  display: flex;
+  line-height: 0;
+}
+.pb-wordmark {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.03em;
+}
+.pb-card:hover .q4o-arrow {
+  color: #c9718f;
+  transform: translate(2px, -2px);
+}
+[data-theme="light"] .pb-card {
+  background: linear-gradient(135deg, rgba(201, 113, 143, 0.1), rgba(201, 113, 143, 0.03));
+}
+
 /* ---------- COMING SOON ---------- */
 .coming-soon {
   margin-bottom: 48px;
